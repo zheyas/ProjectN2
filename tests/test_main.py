@@ -1,19 +1,21 @@
 import pytest
-import numpy as np
-from main_14 import Product, Category  # Замените 'main' на фактическое имя вашего файла
+
+from main_14 import Category, Product  # Замените 'main' на фактическое имя вашего файла
 
 
 # Фикстура для создания продукта
 @pytest.fixture
 def product():
-    return Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5)
+    return Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера",
+                   180000.0, 5)
 
 
 # Фикстура для создания категории
 @pytest.fixture
 def category(product):
     # Используем фикстуру product для создания объекта Category
-    products = [product, Product("Iphone 15", "512GB, Gray space", 210000.0, 8)]
+    products = [product, Product("Iphone 15", "512GB, Gray space",
+                                 210000.0, 8)]
     return Category("Смартфоны", "Описание категории", products)
 
 
@@ -36,4 +38,3 @@ def test_category_initialization(category):
     # Сброс счетчиков для качественного выполнения последующих тестов
     Category.category_count = 0
     Category.product_count = 0
-
