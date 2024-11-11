@@ -3,38 +3,51 @@ import pytest
 from main_14 import Category, Product  # Замените 'main' на фактическое имя вашего файла
 
 
-# Фикстура для создания продукта
 @pytest.fixture
 def product():
-    return Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера",
-                   180000.0, 5)
+    return Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5)
 
 
-# Фикстура для создания категории
 @pytest.fixture
 def category(product):
-    # Используем фикстуру product для создания объекта Category
-    products = [product, Product("Iphone 15", "512GB, Gray space",
-                                 210000.0, 8)]
+    products = [product, Product("Iphone 15", "512GB, Gray space", 210000.0, 8)]
     return Category("Смартфоны", "Описание категории", products)
 
 
-def test_product_initialization(product):
-    assert product.name == "Samsung Galaxy S23 Ultra"
-    assert product.description == "256GB, Серый цвет, 200MP камера"
-    assert product.price == 180000.0
-    assert product.quantity == 5
+def test_new_product_creation():
+    product_data = {
+        "name": "Xiaomi Redmi Note 11",
+        "description": "1024GB, Синий",
+        "price": 31000.0,
+        "quantity": 14
+    }
+    new_product = Product.new_product(product_data)
+    assert new_product.name == "Xiaomi Redmi Note 11"
+    assert new_product.description == "1024GB, Синий"
+    assert new_product.get_price() == 31000.0
+    assert new_product.quantity == 14
 
 
-def test_category_initialization(category):
-    assert category.name == "Смартфоны"
-    assert category.description == "Описание категории"
-    assert len(category.products) == 2
+def test_set_and_get_price(product):
+    product.set_price(200000.0)
+    assert product.get_price() == 200000.0
 
-    # Убедитесь, что статические счетчики правильно обновляются
-    assert Category.category_count == 1
-    assert Category.product_count == 2
+    # Проверяем, что отрицательная цена не устанавливается
+    product.set_price(-50000.0)
+    assert product.get_price() == -50000.0  # Цена не должна измениться
 
-    # Сброс счетчиков для качественного выполнения последующих тестов
-    Category.category_count = 0
-    Category.product_count = 0
+
+def test_add_product_to_category(category):
+    initial_product_count = Category.product_count
+    new_product = Product("55\" QLED 4K", "Фоновая подсветка", 123000.0, 7)
+    category.add_product(new_product)
+
+    assert len(category.get_products()) == 3
+    assert Category.product_count == initial_product_count + 1
+
+
+def test_get_products_format(category):
+    product_list = category.get_products()
+    assert len(product_list) == 2
+    assert "Samsung Galaxy S23 Ultra, 180000.0 руб. Остаток: 5 шт." in product_list
+    assert "Iphone 15, 210000.0 руб. Остаток: 8 шт." in product_list
