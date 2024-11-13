@@ -1,6 +1,5 @@
 from typing import List
 
-
 class Product:
     def __init__(self, name: str, description: str, price: float, quantity: int):
         self.name = name
@@ -8,23 +7,24 @@ class Product:
         self.__price = price
         self.quantity = quantity
 
-    def new_product(prod):
+    @classmethod
+    def new_product(cls, prod):
         name = prod["name"]
         description = prod["description"]
         price = prod["price"]
         quantity = prod["quantity"]
-        return Product(name, description, price, quantity)
+        return cls(name, description, price, quantity)
 
-    def set_price(self, price: float):
-        if price <= 0:
-            print('Цена не должна быть нулевая или отрицательная')
-            self.__price = price
-        else:
-            self.__price = price
-
-    def get_price(self):
+    @property
+    def price(self):
         return self.__price
 
+    @price.setter
+    def price(self, price: float):
+        if price > 0:
+            self.__price = price
+        else:
+            print('Цена должна быть больше нуля')
 
 class Category:
     category_count = 0
@@ -43,10 +43,9 @@ class Category:
         self.__products.append(product)
         Category.product_count += 1
 
-    def get_products(self) -> List[str]:
-        arr = self.__products.copy()
-        arr_str = [f"{i.name}, {i.get_price()} руб. Остаток: {i.quantity} шт." for i in arr]
-        return arr_str
+    @property
+    def products(self) -> List[str]:
+        return [f"{i.name}, {i.price} руб. Остаток: {i.quantity} шт." for i in self.__products]
 
 
 if __name__ == "__main__":
@@ -63,10 +62,10 @@ if __name__ == "__main__":
     product4 = Product("55\" QLED 4K", "Фоновая подсветка", 123000.0, 7)
     category1.add_product(product4)
 
-    print(category1.product_count)
+    print(Category.product_count)
 
     new_product = Product.new_product(
         {"name": "Samsung Galaxy S23 Ultra", "description": "256GB, Серый цвет, 200MP камера", "price": 180000.0,
          "quantity": 5})
 
-    print(category1.get_products())
+    print(category1.products)
