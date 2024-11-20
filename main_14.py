@@ -8,10 +8,10 @@ class Product:
         self.quantity = quantity
 
     def __str__(self):
-        return (f' {self.name}, {self.price} руб. Остаток: {self.quantity} шт.')
+        return f'{self.name}, {self.price} руб. Остаток: {self.quantity} шт.'
 
     def __add__(self, other):
-        return (self.price * self.quantity + other.price * other.quantity)
+        return self.price * self.quantity + other.price * other.quantity
 
     @classmethod
     def new_product(cls, prod):
@@ -32,6 +32,7 @@ class Product:
         else:
             print('Цена должна быть больше нуля')
 
+
 class Category:
     category_count = 0
     product_count = 0
@@ -46,7 +47,9 @@ class Category:
         Category.product_count += len(products)
 
     def __str__(self):
-        return (f'{self.name}, количество продуктов: {len(self.products)} шт.')
+        # Подсчет общего количества товаров в категории
+        total_quantity = sum(product.quantity for product in self.__products)
+        return f'{self.name}, количество продуктов: {total_quantity} шт.'
 
     def add_product(self, product: Product):
         self.__products.append(product)
@@ -72,7 +75,7 @@ if __name__ == '__main__':
         [product1, product2, product3]
     )
 
-    print(str(category1))
+    print(str(category1))  # Покажет общее количество продуктов
 
     print(category1.products)
 
