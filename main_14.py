@@ -1,5 +1,6 @@
 from typing import List
 
+
 class Product:
     def __init__(self, name: str, description: str, price: float, quantity: int):
         self.name = name
@@ -53,10 +54,9 @@ class Category:
 
     def add_product(self, product: Product):
         if not isinstance(product, Product):
-            raise TypeError("Так делать нельзя")
-        else:
-            self.__products.append(product)
-            Category.product_count += 1
+            raise TypeError(f"Ожидается объект типа Product, а получен {type(product).__name__}")
+        self.__products.append(product)
+        Category.product_count += 1
 
     @property
     def products(self) -> List[str]:
@@ -78,7 +78,6 @@ class Smartphone(Product):
         return self.price * self.quantity + other.price * other.quantity
 
 
-
 class LawnGrass(Product):
     def __init__(self, name: str, description: str, price: float, quantity: int,
                  country: str, germination_period: str, color: str):
@@ -92,11 +91,15 @@ class LawnGrass(Product):
             raise TypeError(f"Нельзя сложить продукты разных типов: {type(self).__name__} и {type(other).__name__}")
         return self.price * self.quantity + other.price * other.quantity
 
+
 if __name__ == '__main__':
-    smartphone1 = Smartphone("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5, 95.5,
-                         "S23 Ultra", 256, "Серый")
-    smartphone2 = Smartphone("Iphone 15", "512GB, Gray space", 210000.0, 8, 98.2, "15", 512, "Gray space")
-    smartphone3 = Smartphone("Xiaomi Redmi Note 11", "1024GB, Синий", 31000.0, 14, 90.3, "Note 11", 1024, "Синий")
+
+    smartphone1 = Smartphone("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера",
+                             180000.0, 5, 95.5, "S23 Ultra", 256, "Серый")
+    smartphone2 = Smartphone("Iphone 15", "512GB, Gray space", 210000.0,
+                             8, 98.2, "15", 512, "Gray space")
+    smartphone3 = Smartphone("Xiaomi Redmi Note 11", "1024GB, Синий",
+                             31000.0, 14, 90.3, "Note 11", 1024, "Синий")
 
     print(smartphone1.name)
     print(smartphone1.description)
