@@ -1,6 +1,5 @@
 import pytest
-
-from main_14 import Category, Product  # Замените 'main_14' на фактическое имя вашего файла
+from main_14 import Category, Product, Mixin  # Replace 'main_14' with the actual file name
 
 
 @pytest.fixture
@@ -36,7 +35,7 @@ def test_set_and_get_price(product):
     assert product.price == 200000.0
 
     product.price = -50000.0
-    assert product.price == 200000.0  # Цена не изменилась
+    assert product.price == 200000.0  # Price should not change
 
 
 def test_add_product_to_category(category):
@@ -65,13 +64,13 @@ def test_add_invalid_product_to_category(category):
     with pytest.raises(TypeError) as excinfo:
         category.add_product("Not a product")
 
-    assert "Так делать нельзя" in str(excinfo.value)
+    assert "Ожидается объект типа Product" in str(excinfo.value)  # Fix error message to match the code
     assert len(category.products) == 2
     assert Category.product_count == initial_product_count
 
 
 def test_add_inherited_product_to_category(category):
-    class TestProduct(Product):
+    class TestProduct(Product, Mixin):  # Inheriting from Mixin to show the creation print
         pass
 
     inherited_product = TestProduct("Новый продукт", "Тестовое описание", 50000.0, 10)
