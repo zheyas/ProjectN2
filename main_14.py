@@ -80,6 +80,10 @@ class Category:
     def products(self) -> List[str]:
         return [f"{i.name}, {i.price} руб. Остаток: {i.quantity} шт." for i in self.__products]
 
+    @property
+    def description(self) -> str:
+        """Геттер для __description."""
+        return self.__description
 
 class Smartphone(Product):
     def __init__(self, name: str, description: str, price: float, quantity: int, efficiency: str,
@@ -94,9 +98,9 @@ class Smartphone(Product):
         return f"{self.__class__.__name__}(name={repr(self.name)}, description={repr(self.description)}, " \
                f"price={self.price}, quantity={self.quantity}, efficiency={repr(self.efficiency)}, " \
                f"model={repr(self.model)}, memory={repr(self.memory)}, color={repr(self.color)})"
-
+#isinstance(other, Smartphone)
     def __add__(self, other):
-        if not isinstance(other, Smartphone):
+        if not (type(self).__name__ == type(other).__name__):
             raise TypeError(f"Нельзя сложить продукты разных типов: {type(self).__name__} и {type(other).__name__}")
         return self.price * self.quantity + other.price * other.quantity
 
@@ -108,9 +112,9 @@ class LawnGrass(Product):
         self.country = country
         self.germination_period = germination_period
         self.color = color
-
+#isinstance(other, LawnGrass)
     def __add__(self, other):
-        if not isinstance(other, LawnGrass):
+        if not (type(self).__name__ == type(other).__name__):
             raise TypeError(f"Нельзя сложить продукты разных типов: {type(self).__name__} и {type(other).__name__}")
         return self.price * self.quantity + other.price * other.quantity
 
