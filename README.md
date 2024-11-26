@@ -2,53 +2,60 @@
 # Product and Category Management System
 
 ## Overview
-This project provides a basic structure to manage products and categories. It includes base classes for general products and specialized classes for specific product types like smartphones and lawn grass. The system also tracks product categories, supports adding new products, and provides custom error handling for invalid operations.
+This project provides a flexible and extendable structure to manage products and categories. It includes base classes for generic products and specialized classes for specific product types such as smartphones and lawn grass. The system also supports managing categories, adding products dynamically, and includes robust error handling.
 
 ---
 
 ## Features
+
 ### Product Class
 - Represents a generic product.
-- Includes attributes for:
+- **Attributes**:
   - `name`: The name of the product.
-  - `description`: Description of the product.
-  - `price`: Price of the product (with validation to ensure it's positive).
-  - `quantity`: Number of items in stock.
-- Supports:
-  - Custom string representation.
-  - Adding products to calculate the combined total cost of multiple products.
-  - Factory method (`new_product`) to create instances from a dictionary.
+  - `description`: A brief description.
+  - `price`: Price of the product (with validation for positive values).
+  - `quantity`: Available stock quantity.
+- **Functionalities**:
+  - Custom string representation for better readability.
+  - Overloaded addition operator to calculate the combined cost of products.
+  - Factory method (`new_product`) for creating instances from dictionaries.
+  - Read-only property for price validation.
 
 ### Category Class
-- Represents a product category.
-- Tracks:
-  - Total number of categories (`category_count`).
-  - Total number of products across all categories (`product_count`).
-- Supports:
-  - Adding products to the category.
-  - Viewing all products in a category.
+- Manages a collection of products under a specific category.
+- **Attributes**:
+  - `category_count`: Tracks the total number of categories.
+  - `product_count`: Tracks the total number of products across all categories.
+  - `description`: A brief description of the category.
+  - `products`: List of products in the category.
+- **Functionalities**:
+  - Add products dynamically with type validation.
+  - View all products within a category.
 
 ### Specialized Product Classes
 #### Smartphone
 - Inherits from `Product`.
-- Adds attributes:
-  - `efficiency`: Battery efficiency rating.
-  - `model`: Model of the smartphone.
+- **Additional Attributes**:
+  - `efficiency`: Battery efficiency.
+  - `model`: Model name.
   - `memory`: Storage capacity.
-  - `color`: Smartphone color.
-- Restricts addition to only other `Smartphone` objects.
+  - `color`: Color of the smartphone.
+- **Special Features**:
+  - Restricts addition to other `Smartphone` objects only.
 
 #### LawnGrass
 - Inherits from `Product`.
-- Adds attributes:
+- **Additional Attributes**:
   - `country`: Country of origin.
-  - `germination_period`: Time required for germination.
-  - `color`: Color of the grass.
-- Restricts addition to only other `LawnGrass` objects.
+  - `germination_period`: Germination time.
+  - `color`: Grass color.
+- **Special Features**:
+  - Restricts addition to other `LawnGrass` objects only.
 
 ---
 
 ## Installation
+
 1. Clone the repository:
    ```bash
    git clone https://github.com/your-repo/product-management-system.git
@@ -62,25 +69,45 @@ This project provides a basic structure to manage products and categories. It in
 ---
 
 ## Usage
+
 ### Example Code
 ```python
-from typing import List
-# Initialize some products
-smartphone = Smartphone("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера",
-                        180000.0, 5, 95.5, "S23 Ultra", 256, "Серый")
-grass = LawnGrass("Газонная трава", "Элитная трава для газона", 500.0, 20, "Россия", "7 дней", "Зеленый")
+# Import necessary classes
+from product_management import Smartphone, LawnGrass, Category
+
+# Create some products
+smartphone = Smartphone(
+    "Samsung Galaxy S23 Ultra", 
+    "256GB, Серый цвет, 200MP камера",
+    180000.0, 
+    5, 
+    efficiency=95.5, 
+    model="S23 Ultra", 
+    memory=256, 
+    color="Серый"
+)
+
+grass = LawnGrass(
+    "Газонная трава", 
+    "Элитная трава для газона", 
+    500.0, 
+    20, 
+    country="Россия", 
+    germination_period="7 дней", 
+    color="Зеленый"
+)
 
 # Create a category and add products
 category = Category("Смартфоны", "Высокотехнологичные смартфоны", [smartphone])
-print(category.products)
+category.add_product(smartphone)
 
-# Calculate combined cost
+# Calculate combined cost of smartphones
 total_cost = smartphone + smartphone
 print(f"Общая стоимость: {total_cost} руб.")
 ```
 
 ### Running the Script
-Run the script directly:
+Run the main script:
 ```bash
 python main.py
 ```
@@ -89,7 +116,8 @@ python main.py
 
 ## Error Handling
 - Adding a non-`Product` object to a `Category` raises a `TypeError`.
-- Adding incompatible types of products (e.g., `Smartphone` + `LawnGrass`) raises a `TypeError`.
+- Adding incompatible product types (e.g., `Smartphone` + `LawnGrass`) raises a `TypeError`.
+- Setting a negative price triggers validation.
 
 ---
 
