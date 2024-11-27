@@ -1,6 +1,5 @@
 import pytest
-from main_14 import Category, Product, Mixin  # Replace 'main_14' with the actual file name
-
+from main_14 import Category, Product, Mixin
 
 @pytest.fixture
 def product():
@@ -48,7 +47,7 @@ def test_add_product_to_category(category):
 
 
 def test_get_products_format(category):
-    product_list = category.products
+    product_list = [str(product) for product in category.products]
     assert len(product_list) == 2
     assert "Samsung Galaxy S23 Ultra, 180000.0 руб. Остаток: 5 шт." in product_list
     assert "Iphone 15, 210000.0 руб. Остаток: 8 шт." in product_list
@@ -64,7 +63,7 @@ def test_add_invalid_product_to_category(category):
     with pytest.raises(TypeError) as excinfo:
         category.add_product("Not a product")
 
-    assert "Ожидается объект типа Product" in str(excinfo.value)  # Fix error message to match the code
+    assert "Ожидается объект типа Product" in str(excinfo.value)
     assert len(category.products) == 2
     assert Category.product_count == initial_product_count
 
@@ -80,4 +79,4 @@ def test_add_inherited_product_to_category(category):
 
     assert len(category.products) == 3
     assert Category.product_count == initial_product_count + 1
-    assert "Новый продукт, 50000.0 руб. Остаток: 10 шт." in category.products
+    assert str(inherited_product) in [str(product) for product in category.products]

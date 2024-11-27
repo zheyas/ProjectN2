@@ -2,7 +2,7 @@
 # Product and Category Management System
 
 ## Overview
-This project provides a flexible and extendable structure to manage products and categories. It includes base classes for generic products and specialized classes for specific product types such as smartphones and lawn grass. The system also supports managing categories, adding products dynamically, and includes robust error handling.
+This project provides a flexible and extendable structure to manage products and categories. It includes base classes for generic products and specialized classes for specific product types such as smartphones and lawn grass. The system also supports managing categories, adding products dynamically, and includes robust error handling and integration with Mixin for enhanced functionality.
 
 ---
 
@@ -19,7 +19,11 @@ This project provides a flexible and extendable structure to manage products and
   - Custom string representation for better readability.
   - Overloaded addition operator to calculate the combined cost of products.
   - Factory method (`new_product`) for creating instances from dictionaries.
-  - Read-only property for price validation.
+  - Read-only property for price validation and dynamic updates.
+
+### Mixin Class
+- A mixin for enhanced initialization and debug printouts.
+- Automatically prints the details of created objects, including attribute values.
 
 ### Category Class
 - Manages a collection of products under a specific category.
@@ -31,10 +35,11 @@ This project provides a flexible and extendable structure to manage products and
 - **Functionalities**:
   - Add products dynamically with type validation.
   - View all products within a category.
+  - Calculate the average price of all products in the category.
 
 ### Specialized Product Classes
 #### Smartphone
-- Inherits from `Product`.
+- Inherits from `Product` and integrates the `Mixin` class.
 - **Additional Attributes**:
   - `efficiency`: Battery efficiency.
   - `model`: Model name.
@@ -44,7 +49,7 @@ This project provides a flexible and extendable structure to manage products and
   - Restricts addition to other `Smartphone` objects only.
 
 #### LawnGrass
-- Inherits from `Product`.
+- Inherits from `Product` and integrates the `Mixin` class.
 - **Additional Attributes**:
   - `country`: Country of origin.
   - `germination_period`: Germination time.
@@ -73,7 +78,7 @@ This project provides a flexible and extendable structure to manage products and
 ### Example Code
 ```python
 # Import necessary classes
-from product_management import Smartphone, LawnGrass, Category
+from main_14 import Smartphone, LawnGrass, Category
 
 # Create some products
 smartphone = Smartphone(
@@ -81,10 +86,10 @@ smartphone = Smartphone(
     "256GB, Серый цвет, 200MP камера",
     180000.0, 
     5, 
-    efficiency=95.5, 
+    efficiency="High", 
     model="S23 Ultra", 
-    memory=256, 
-    color="Серый"
+    memory="256GB", 
+    color="Gray"
 )
 
 grass = LawnGrass(
@@ -98,7 +103,7 @@ grass = LawnGrass(
 )
 
 # Create a category and add products
-category = Category("Смартфоны", "Высокотехнологичные смартфоны", [smartphone])
+category = Category("Смартфоны", "Описание категории", [smartphone])
 category.add_product(smartphone)
 
 # Calculate combined cost of smartphones
@@ -106,10 +111,10 @@ total_cost = smartphone + smartphone
 print(f"Общая стоимость: {total_cost} руб.")
 ```
 
-### Running the Script
-Run the main script:
+### Running the Tests
+Run the test suite with:
 ```bash
-python main.py
+pytest
 ```
 
 ---
