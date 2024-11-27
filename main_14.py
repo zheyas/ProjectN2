@@ -21,10 +21,13 @@ class BaseProduct(ABC):
 
 class Product(BaseProduct, Mixin):
     def __init__(self, name: str, description: str, price: float, quantity: int):
-        self.name = name
-        self.description = description
-        self.__price = price
-        self.quantity = quantity
+        if quantity <= 0:
+            raise ValueError('Товар с нулевым количеством не может быть добавлен')
+        else   :
+            self.name = name
+            self.description = description
+            self.__price = price
+            self.quantity = quantity
 
     def __str__(self):
         return f'{self.name}, {self.price} руб. Остаток: {self.quantity} шт.'
@@ -85,6 +88,16 @@ class Category:
         """Геттер для __description."""
         return self.__description
 
+    def middle_price(self) -> float:
+
+        try:
+            total_pr = sum(product.price for product in self.__products)
+            result = total_pr / len(self.__products)
+            return (result)
+        except ZeroDivisionError:
+            print("Ошибка: деление на ноль!")
+            return 0.0
+
 class Smartphone(Product):
     def __init__(self, name: str, description: str, price: float, quantity: int, efficiency: str,
                  model: str, memory: str, color: str):
@@ -120,44 +133,21 @@ class LawnGrass(Product):
 
 
 if __name__ == '__main__':
+    try:
+        product_invalid = Product("Бракованный товар", "Неверное количество", 1000.0, 0)
+    except ValueError as e:
+        print(
+            "Возникла ошибка ValueError прерывающая работу программы при попытке добавить продукт с нулевым количеством")
+    else:
+        print("Не возникла ошибка ValueError при попытке добавить продукт с нулевым количеством")
+
     product1 = Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5)
     product2 = Product("Iphone 15", "512GB, Gray space", 210000.0, 8)
     product3 = Product("Xiaomi Redmi Note 11", "1024GB, Синий", 31000.0, 14)
 
-    print(product1.name)
-    print(product1.description)
-    print(product1.price)
-    print(product1.quantity)
+    category1 = Category("Смартфоны", "Категория смартфонов", [product1, product2, product3])
 
-    print(product2.name)
-    print(product2.description)
-    print(product2.price)
-    print(product2.quantity)
+    print(category1.middle_price())
 
-    print(product3.name)
-    print(product3.description)
-    print(product3.price)
-    print(product3.quantity)
-
-    category1 = Category("Смартфоны",
-                         "Смартфоны, как средство не только коммуникации, но и получения дополнительных функций для удобства жизни",
-                         [product1, product2, product3])
-
-    print(category1.name == "Смартфоны")
-    print(category1.description)
-    print(len(category1.products))
-    print(category1.category_count)
-    print(category1.product_count)
-
-    product4 = Product("55\" QLED 4K", "Фоновая подсветка", 123000.0, 7)
-    category2 = Category("Телевизоры",
-                         "Современный телевизор, который позволяет наслаждаться просмотром, станет вашим другом и помощником",
-                         [product4])
-
-    print(category2.name)
-    print(category2.description)
-    print(len(category2.products))
-    print(category2.products)
-
-    print(Category.category_count)
-    print(Category.product_count)
+    category_empty = Category("Пустая категория", "Категория без продуктов", [])
+    print(category_empty.middle_price())
