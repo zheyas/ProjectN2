@@ -1,5 +1,5 @@
 import pytest
-from main_14 import Category, Product, Mixin
+from main_14 import Category, Product, Mixin, Smartphone, LawnGrass
 
 @pytest.fixture
 def product():
@@ -47,7 +47,7 @@ def test_add_product_to_category(category):
 
 
 def test_get_products_format(category):
-    product_list = [str(product) for product in category.products]
+    product_list = category.products
     assert len(product_list) == 2
     assert "Samsung Galaxy S23 Ultra, 180000.0 руб. Остаток: 5 шт." in product_list
     assert "Iphone 15, 210000.0 руб. Остаток: 8 шт." in product_list
@@ -63,7 +63,7 @@ def test_add_invalid_product_to_category(category):
     with pytest.raises(TypeError) as excinfo:
         category.add_product("Not a product")
 
-    assert "Ожидается объект типа Product" in str(excinfo.value)
+    assert "Ожидается объект типа Product, а получен str" in str(excinfo.value)
     assert len(category.products) == 2
     assert Category.product_count == initial_product_count
 
@@ -79,4 +79,94 @@ def test_add_inherited_product_to_category(category):
 
     assert len(category.products) == 3
     assert Category.product_count == initial_product_count + 1
-    assert str(inherited_product) in [str(product) for product in category.products]
+    assert f"{inherited_product.name}, {inherited_product.price} руб. Остаток: {inherited_product.quantity} шт." in category.products
+
+
+def test_product_init_and_str():
+    product = Product("Test Product", "Test Description", 100.0, 10)
+    assert product.name == "Test Product"
+    assert product.description == "Test Description"
+    assert product.price == 100.0
+    assert product.quantity == 10
+    assert str(product) == "Test Product, 100.0 руб. Остаток: 10 шт."
+
+
+def test_category_init_and_str():
+    category = Category("Test Category", "Test Description", [])
+    assert category.name == "Test Category"
+    assert category.description == "Test Description"
+    assert category.products == []
+    assert str(category) == "Test Category, количество продуктов: 0 шт."
+
+
+def test_middle_price(category):
+    middle_price = category.middle_price()
+    assert middle_price == 195000.0
+
+
+def test_smartphone_init():
+    smartphone = Smartphone("Test Smartphone", "Test Description", 100.0, 10, "High", "Model X", "128GB", "Black")
+    assert smartphone.name == "Test Smartphone"
+    assert smartphone.description == "Test Description"
+    assert smartphone.price == 100.0
+    assert smartphone.quantity == 10
+    assert smartphone.efficiency == "High"
+    assert smartphone.model == "Model X"
+    assert smartphone.memory == "128GB"
+    assert smartphone.color == "Black"
+
+
+def test_smartphone_repr():
+    smartphone = Smartphone("Test Smartphone", "Test Description", 100.0, 10, "High", "Model X", "128GB", "Black")
+    assert repr(smartphone) == "Smartphone(name='Test Smartphone', description='Test Description', " \
+                               "price=100.0, quantity=10, efficiency='High', model='Model X', memory='128GB', color='Black')"
+
+
+def test_smartphone_add():
+    smartphone1 = Smartphone("Test Smartphone 1", "Test Description 1", 100.0, 5, "High", "Model X", "128GB", "Black")
+    smartphone2 = Smartphone("Test Smartphone 2", "Test Description 2", 200.0, 3, "Medium", "Model Y", "256GB", "White")
+    total_cost = smartphone1 + smartphone2
+    assert total_cost == 1100.0
+
+
+def test_smartphone_add_invalid():
+    smartphone = Smartphone("Test Smartphone", "Test Description", 100.0, 10, "High", "Model X", "128GB", "Black")
+    product = Product("Test Product", "Test Description", 50.0, 5)
+
+    with pytest.raises(TypeError) as excinfo:
+        _ = smartphone + product
+
+    assert "Нельзя сложить продукты разных типов: Smartphone и Product" in str(excinfo.value)
+
+
+def test_lawngrass_init():
+    lawngrass = LawnGrass("Test LawnGrass", "Test Description", 50.0, 20, "USA", "7-10 days", "Green")
+    assert lawngrass.name == "Test LawnGrass"
+    assert lawngrass.description == "Test Description"
+    assert lawngrass.price == 50.0
+    assert lawngrass.quantity == 20
+    assert lawngrass.country == "USA"
+    assert lawngrass.germination_period == "7-10 days"
+    assert lawngrass.color == "Green"
+
+
+def test_lawngrass_str():
+    lawngrass = LawnGrass("Test LawnGrass", "Test Description", 50.0, 20, "USA", "7-10 days", "Green")
+    assert str(lawngrass) == "Test LawnGrass, 50.0 руб. Остаток: 20 шт."
+
+
+def test_lawngrass_add():
+    lawngrass1 = LawnGrass("Test LawnGrass 1", "Test Description 1", 50.0, 10, "USA", "7-10 days", "Green")
+    lawngrass2 = LawnGrass("Test LawnGrass 2", "Test Description 2", 60.0, 5, "Canada", "5-7 days", "Dark Green")
+    total_cost = lawngrass1 + lawngrass2
+    assert total_cost == 800.0
+
+
+def test_lawngrass_add_invalid():
+    lawngrass = LawnGrass("Test LawnGrass", "Test Description", 50.0, 10, "USA", "7-10 days", "Green")
+    product = Product("Test Product", "Test Description", 30.0, 5)
+
+    with pytest.raises(TypeError) as excinfo:
+        _ = lawngrass + product
+
+    assert "Нельзя сложить продукты разных типов: LawnGrass и Product" in str(excinfo.value)
